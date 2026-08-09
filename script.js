@@ -2,7 +2,7 @@
 // CONFIG
 // ==========================================================================
 // Point this at your running FastAPI backend.
-const API_URL = "https://wellness-pulse.onrender.com";
+const API_URL = "https://wellness-pulse.onrender.com/predict";
 
 // The score scale your model was trained on (Mental_Health_Model.pkl).
 // Change this single number if your model outputs on a different range.
