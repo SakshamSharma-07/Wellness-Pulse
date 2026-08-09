@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellbeing Signal — Digital Habits Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ LEFT / HERO PANEL ============ -->
+  <aside class="hero" id="hero">
+    <div class="hero__top">
+      <p class="eyebrow" id="heroEyebrow">An experimental wellbeing model</p>
+      <h1 class="hero__title" id="heroTitle">How your <em>habits</em><br>shape your mind.</h1>
+      <p class="hero__sub" id="heroSub">Answer a few questions about your daily routine and social&nbsp;media use. A model trained on real usage data estimates where you currently land on a 0&ndash;10 wellbeing scale.</p>
+    </div>
+
+    <div class="dial-stage">
+      <svg class="dial" id="dialSvg" viewBox="0 0 300 190" aria-hidden="true">
+        <!-- band arcs + ticks injected by script.js -->
+        <g id="dialBands"></g>
+        <g id="dialTicks"></g>
+        <line id="dialNeedle" x1="150" y1="170" x2="30" y2="170" class="dial__needle" />
+        <circle id="dialPivot" cx="150" cy="170" r="7" class="dial__pivot" />
+      </svg>
+      <div class="dial-readout" id="dialReadout" aria-live="polite">
+        <span class="dial-readout__number" id="scoreNumber">&mdash;</span>
+        <span class="dial-readout__scale">/ 10</span>
+      </div>
+      <p class="dial-band" id="bandLabel"></p>
+    </div>
+
+    <p class="disclaimer">Educational estimate only, not a clinical diagnosis. If you're struggling, please talk to a mental health professional or someone you trust.</p>
+  </aside>
+
+  <!-- ============ RIGHT / INTERACTION PANEL ============ -->
+  <main class="panel">
+
+    <div class="progress" id="progress">
+      <div class="progress__track"><div class="progress__fill" id="progressFill"></div></div>
+      <div class="progress__labels">
+        <span class="progress__label is-active" data-step="1">You</span>
+        <span class="progress__label" data-step="2">Digital habits</span>
+        <span class="progress__label" data-step="3">Lifestyle</span>
+      </div>
+    </div>
+
+    <form id="predictForm" novalidate>
+
+      <!-- STEP 1 -->
+      <section class="step is-active" data-step="1">
+        <h2 class="step__title">A little about you</h2>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="age">Age</label>
+            <input type="number" id="age" class="input" min="0" max="100" placeholder="e.g. 21" required>
+          </div>
+          <div class="field">
+            <label class="field__label" for="country">Country</label>
+            <input type="text" id="country" class="input" list="countryList" placeholder="e.g. India" required autocomplete="off">
+            <datalist id="countryList">
+              <option value="India"></option>
+              <option value="USA"></option>
+              <option value="Canada"></option>
+              <option value="Australia"></option>
+              <option value="UK"></option>
+              <option value="Germany"></option>
+              <option value="Mexico"></option>
+              <option value="Turkey"></option>
+              <option value="France"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Gender</label>
+          <div class="pillgroup" data-field="gender">
+            <button type="button" class="pill" data-value="Male">Male</button>
+            <button type="button" class="pill" data-value="Female">Female</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Academic level</label>
+          <div class="pillgroup" data-field="academic_level">
+            <button type="button" class="pill" data-value="High School">High School</button>
+            <button type="button" class="pill" data-value="Undergraduate">Undergraduate</button>
+            <button type="button" class="pill" data-value="Graduate">Graduate</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" data-step="2">
+        <h2 class="step__title">Your digital habits</h2>
+
+        <div class="field">
+          <label class="field__label" for="platform">Most used platform</label>
+          <select id="platform" class="select" required>
+            <option value="" disabled selected>Choose a platform</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>Snapchat</option>
+            <option>Twitter</option>
+            <option>YouTube</option>
+            <option>TikTok</option>
+            <option>LinkedIn</option>
+            <option>LINE</option>
+            <option>KakaoTalk</option>
+            <option>VKontakte</option>
+            <option>WhatsApp</option>
+            <option>WeChat</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Main purpose of use</label>
+          <div class="pillgroup" data-field="purpose_of_use">
+            <button type="button" class="pill" data-value="Networking">Networking</button>
+            <button type="button" class="pill" data-value="Education">Education</button>
+            <button type="button" class="pill" data-value="Entertainment">Entertainment</button>
+            <button type="button" class="pill" data-value="News">News</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field__label-row">
+            <label class="field__label" for="usageHours">Average daily screen time</label>
+            <span class="field__value"><span id="usageHoursValue">4.0</span> hrs</span>
+          </div>
+          <input type="range" id="usageHours" class="slider" min="0" max="24" step="0.5" value="4">
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="unlocks">Daily phone unlocks</label>
+          <input type="number" id="unlocks" class="input" min="0" placeholder="e.g. 45" required>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" data-step="3">
+        <h2 class="step__title">Lifestyle &amp; stress</h2>
+
+        <div class="field">
+          <div class="field__label-row">
+            <label class="field__label" for="studyHours">Study hours per day</label>
+            <span class="field__value"><span id="studyHoursValue">3.0</span> hrs</span>
+          </div>
+          <input type="range" id="studyHours" class="slider" min="0" max="24" step="0.5" value="3">
+        </div>
+
+        <div class="field">
+          <div class="field__label-row">
+            <label class="field__label" for="activityHours">Physical activity per day</label>
+            <span class="field__value"><span id="activityHoursValue">1.0</span> hrs</span>
+          </div>
+          <input type="range" id="activityHours" class="slider" min="0" max="24" step="0.5" value="1">
+        </div>
+
+        <div class="field">
+          <div class="field__label-row">
+            <label class="field__label" for="sleepHours">Sleep per night</label>
+            <span class="field__value"><span id="sleepHoursValue">7.0</span> hrs</span>
+          </div>
+          <input type="range" id="sleepHours" class="slider" min="0" max="24" step="0.5" value="7">
+        </div>
+
+        <div class="field">
+          <label class="field__label">Current stress level</label>
+          <div class="pillgroup" data-field="stress_level">
+            <button type="button" class="pill" data-value="Low">Low</button>
+            <button type="button" class="pill" data-value="Medium">Medium</button>
+            <button type="button" class="pill" data-value="High">High</button>
+            <button type="button" class="pill" data-value="Very High">Very High</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="field-error" id="fieldError"></p>
+
+      <div class="form-nav">
+        <button type="button" class="btn btn--ghost" id="backBtn" disabled>Back</button>
+        <button type="button" class="btn btn--primary" id="nextBtn">Continue</button>
+        <button type="submit" class="btn btn--primary hidden" id="submitBtn">
+          <span class="btn__label">Get my score</span>
+          <span class="btn__spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+
+    <!-- ============ RESULT DETAIL (shown after prediction) ============ -->
+    <section class="result hidden" id="result">
+      <p class="eyebrow">What this reflects</p>
+      <p class="result__intro" id="resultIntro"></p>
+      <div class="chips" id="chips"></div>
+      <button type="button" class="btn btn--ghost" id="restartBtn">Start over</button>
+    </section>
+
+    <!-- ============ ERROR STATE ============ -->
+    <section class="error hidden" id="errorBox">
+      <p class="eyebrow">Something went wrong</p>
+      <p id="errorMessage"></p>
+      <button type="button" class="btn btn--primary" id="retryBtn">Try again</button>
+    </section>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
