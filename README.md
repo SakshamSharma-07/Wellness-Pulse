@@ -23,6 +23,8 @@ A **predictive machine learning application** that estimates student mental heal
 
 ---
 
+Try the application here: [Wellness Pulse](https://wellness-pulse-1.onrender.com/)
+
 ## 🎯 Problem Statement
 
 Students face increasing mental health challenges driven by:
